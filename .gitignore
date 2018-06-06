@@ -1,3 +1,4 @@
 *.pyc
 redis/db
 redis/backup
+test_results
