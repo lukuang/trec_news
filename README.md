@@ -4,10 +4,10 @@ for trec news track
 ## Table of Contents
 - [Official Documents](#official-documents)  
 - [Collection](#collection)  
-- [Data Locations](data-locations)
-- [Dbpedia Spotlight](dbpedia-spotlight)
+- [Data Locations](#data-locations)
+- [Dbpedia Spotlight](#dbpedia-spotlight)
 - [Code](#code)
-  - [Utility Modules](utility-modules)
+  - [Utility Modules](#utility-modules)
 
 
 ## Official Documents
