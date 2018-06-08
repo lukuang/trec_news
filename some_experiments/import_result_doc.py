@@ -1,5 +1,7 @@
 """
 import documents from the results to the redis database
+NOTE: the results file must be in the directory with the
+name the same as the query id
 """
 
 import os
@@ -38,14 +40,17 @@ def load_docid_from_file(src_file):
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--file_list","-fl",nargs='+')
+    parser.add_argument("file_list",nargs='+')
     args=parser.parse_args()
 
     docids = {}
     for src_file in args.file_list:
         qid = os.path.basename(os.path.dirname(src_file ))
         docids[qid] = load_docid_from_file(src_file)
-        
+    
+    # NOTE: the results file must be in the directory with the
+    # name the same as the query id
+    
     # print "The results:"
     # print docids
 
