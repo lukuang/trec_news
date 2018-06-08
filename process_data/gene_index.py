@@ -19,12 +19,19 @@ def main():
     parser.add_argument("index_dir")
     parser.add_argument("--indri_para_path","-if",default="./index.para")
     parser.add_argument("--use_stopwords","-s",action="store_true")
+    parser.add_argument("--index_type","-it",choices=range(2),default=0,type=int,
+        help="""
+            Choose the query type:
+                0: articles
+                1: paragraphs
+        """)
     args=parser.parse_args()
 
     field_data = []
     field_data.append({"name":"published_date","type":"numeric"})
-    field_data.append({"name":"tt","type":"text"})
-    field_data.append({"name":"body","type":"text"})
+    if args.index_type == 1:
+        field_data.append({"name":"tt","type":"text"})
+        field_data.append({"name":"body","type":"text"})
     gene_indri_index_para_file(args.corpus_dir,args.indri_para_path,
                                args.index_dir,field_data=field_data,use_stopper=args.use_stopwords)
 
