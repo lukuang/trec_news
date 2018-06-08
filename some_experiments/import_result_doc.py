@@ -57,15 +57,18 @@ def main():
     article_generator = ArticleGenerator()
     doc_info_map = {}
     for qid in docids:
+        count = 0
         for phara_id in docids[qid]:
             for docid in docids[qid][phara_id]:
                 if docid not in doc_info_map:
+                    count += 1
                     doc_info_map[docid] = {
                         "qid":qid,
                         "phara_ids":[phara_id]
                     }
                 else:
                     doc_info_map[docid]["phara_ids"].append(phara_id)
+        print "for %s, there are %d documents" %(qid,count)
 
     data_dir = "/infolab/node4/lukuang/trec_news/data/washington_post/WashingtonPost/data"
     articles = article_generator.generate_from_dir(data_dir,doc_info_map.keys())
