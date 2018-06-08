@@ -44,14 +44,15 @@ def main():
                 1: named_entities
         """)
     parser.add_argument("--index_dir",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/")
-    parser.add_argument("--docid",default="2203bfb5aeb4cf0adb8997e0c7185c28")
+    parser.add_argument("--qid",default="2203bfb5aeb4cf0adb8997e0c7185c28")
+    parser.add_argument("--number_of_results","-rn",default=10,type=int)
     args=parser.parse_args()
 
     #load the testing query document
     query_db = redis.Redis(host=RedisDB.host,
                                       port=RedisDB.port,
                                       db=RedisDB.query_db)
-    doc_string = query_db.get(args.docid)
+    doc_string = query_db.get(args.qid)
 
     doc_json = json.loads(doc_string)
     paragraphs = doc_json["paragraphs"]
@@ -62,8 +63,8 @@ def main():
 
     # create queries
 
-    query_factory = IndriQueryFactory(100,rule=RULE[args.rule],numeric_compare="less")
-    queries = {}
+    query_factory = IndriQueryFactory(args.number_of_results,rule=RULE[args.rule],numeric_compare="less")
+    queries = OrderedDict()
     for index,para_text in enumerate(paragraphs):
         qid = "Q%s"%(str(index).zfill(2))
 

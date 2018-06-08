@@ -160,6 +160,7 @@ def main():
     parser.add_argument("--search_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/")
     parser.add_argument("--qid",default="2203bfb5aeb4cf0adb8997e0c7185c28")
     parser.add_argument("--number_of_keywords","-kn",default=3,type=int)
+    parser.add_argument("--number_of_results","-rn",default=10,type=int)
     args=parser.parse_args()
 
     #load the testing query document
@@ -182,10 +183,8 @@ def main():
 
     # create queries
 
-    query_factory = IndriQueryFactory(100,rule=RULE[args.rule],numeric_compare="less")
-    queries = {}
+    query_factory = IndriQueryFactory(args.number_of_results,rule=RULE[args.rule],numeric_compare="less")
     paragraph_words = OrderedDict()
-    para_entities = {}
     print "Getting words for each paragraph"
     for index,para_text in enumerate(paragraphs):
         qid = "Q%s"%(str(index).zfill(2))
