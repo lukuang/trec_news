@@ -40,19 +40,24 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("doc_dir")
     parser.add_argument("dest_dir")
-    parser.add_argument("--job_id","-j",default=1,type=int,choices=[1,2])
+    parser.add_argument("--job_id","-j",default=0,type=int)
+    parser.add_argument("--number_of_job","-nj",default=1,type=int)
     args=parser.parse_args()
 
     para_doc = ParagraphDoc()
     annotator = dbpedia.EntityAnnotator()
     count = 0
+    if args.number_of_job <= args.job_id:
+        error_str = "Job id cannot be larger or equal to the number of jobs!\n"
+        error_str += "Job id: %d, number of job:%d\n" %(args.job_id,args.number_of_job)
+        raise ValueError(error_str)
     for file_name in os.walk(args.doc_dir).next()[2]:
             file_path = os.path.join(args.doc_dir,file_name)
             # docs = para_doc.generate_from_dir(args.doc_dir)
             dest_file = os.path.join(args.dest_dir,file_name)
             count += 1
-            if count %args.job_id != 0:
-                print "Skip %s" %(dest_file)
+            if count %args.number_of_job != args.job_id:
+                print "Skip %s, it belongs to other jobs" %(dest_file)
                 continue
             if os.path.exists(dest_file): 
                 print "Skip existing file %s" %(dest_file)
