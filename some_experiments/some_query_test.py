@@ -49,10 +49,10 @@ def main():
     args=parser.parse_args()
 
     #load the testing query document
-    query_db = redis.Redis(host=RedisDB.host,
+    bl_query_db = redis.Redis(host=RedisDB.host,
                                       port=RedisDB.port,
-                                      db=RedisDB.query_db)
-    doc_string = query_db.get(args.qid)
+                                      db=RedisDB.bl_query_db)
+    doc_string = bl_query_db.get(args.qid)
 
     doc_json = json.loads(doc_string)
     paragraphs = doc_json["paragraphs"]

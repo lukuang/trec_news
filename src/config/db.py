@@ -10,9 +10,10 @@ class RedisDB(object) :
   # specifications of DBs
 
   ## general DB
-  result_doc_db = 1
-  query_db = 2
+  bl_query_db = 1
+  er_query_db = 2
   collection_stats_db = 3
+  result_doc_db = 4
   """
   doc_rank_db = 4
   cs_db = 5

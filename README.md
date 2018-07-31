@@ -75,11 +75,14 @@ The code of this part is in `redis` directory
 You only need to run the server by entering this directory and execute: ```./redis-server redis.conf```. You could run the debug script for manually checking the data in the database. Importing data into the database is handled by python code.
 
 There are three tables in the redis database now: 
-1. ```result_doc_db```: table contains the documents of different queries. The keys are the query ids (e.g. the document id for the query article). There are only three example queries I take from the guideline. For each query, the value is a hash. The hash uses the result document ids as keys. The value is a json string. You can find out the string's structure by looking at how I generate it in ```process_data/import_collection_stats.py``` 
-2. ```query_db```: table contains queries. The keys are the query ids (e.g. the document id for the query article). There are only three example queries I take from the guideline. The value of each query is a json string that is the same as that in ```result_doc_db```.
+
+1. ```bl_query_db```: table contains queries of background linking. The keys are the query ids (e.g. the document id for the query article). The value of each query is a json string that is the same as that in ```result_doc_db```.
+2. ```er_query_db```: table contains queries of entity ranking. The keys are the query ids (e.g. the document id for the query article). The value of each query is a json string that is similar to that in ```result_doc_db``` and it has an extra field ```entities``` which contains entities in the query article.
+
 3. ```collection_stats_db```: table contains some collection statistics. There are two types of stats now: 
   - ```pwc```: word collection probability. Its value is a hash and the key is a stemmed word and the value is the probability
   - ```stopwords```: stopwords
+4. ```result_doc_db```: table contains the documents of different queries. The keys are the query ids (e.g. the document id for the query article). There are only three example queries I take from the guideline. For each query, the value is a hash. The hash uses the result document ids as keys. The value is a json string. You can find out the string's structure by looking at how I generate it in ```process_data/import_collection_stats.py``` 
 
 ### Python
 
