@@ -51,7 +51,7 @@ def get_pwc(index_dir):
 def main():
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--index_dir","-id",default="/infolab/node4/lukuang/trec_news/data/washington_post/index")
+    parser.add_argument("--index_dir","-id",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/v2")
     parser.add_argument("--stopwords_path")
     args=parser.parse_args()
 
