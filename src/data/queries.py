@@ -49,8 +49,8 @@ class BQuery(NewsQueryBase):
             qid_string = re.sub("Number:","",qid_string)
             qid = re.search("\w+",qid_string).group(0)
 
-            docid = query.find("docid").text
-            url = query.find("url").text
+            docid = query.find("docid").text.strip()
+            url = query.find("url").text.strip()
             single_query = {
                                 "qid":qid,
                                 "docid":docid,
@@ -58,9 +58,7 @@ class BQuery(NewsQueryBase):
                             }
             self._queries.append(single_query)
 
-    @property
-    def queries(self):
-        return self._queries
+
 
 class EQuery(NewsQueryBase):
     """
@@ -81,16 +79,16 @@ class EQuery(NewsQueryBase):
             qid_string = re.sub("Number:","",qid_string)
             qid = re.search("\w+",qid_string).group(0)
 
-            docid = query.find("docid").text
-            url = query.find("url").text
+            docid = query.find("docid").text.strip()
+            url = query.find("url").text.strip()
             entities = []
             for entity in query.find("entities"):
-                eid = entity.find("id").text
-                link = entity.find("link").text
+                eid = entity.find("id").text.strip()
+                link = entity.find("link").text.strip()
                 mention = []
                 for e_mention in entity.findall("mention"):
                     
-                    mention.append(e_mention.text)
+                    mention.append(e_mention.text.strip())
 
                 entity_json = {
                     "id": eid,
