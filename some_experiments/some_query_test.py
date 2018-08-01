@@ -43,7 +43,7 @@ def main():
                 0: all_text
                 1: named_entities
         """)
-    parser.add_argument("--index_dir",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/")
+    parser.add_argument("--index_dir",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/v2")
     parser.add_argument("--qid",default="2203bfb5aeb4cf0adb8997e0c7185c28")
     parser.add_argument("--number_of_results","-rn",default=10,type=int)
     args=parser.parse_args()
