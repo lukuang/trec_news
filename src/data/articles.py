@@ -60,6 +60,7 @@ class ArticleGenerator(object):
                     docid = doc_json["id"]
                     if docids is not None:
                         if docid not in docids:
+                            # print "Skip %s" %(docid)
                             continue
                     published_date = doc_json["published_date"]
                     url = doc_json["article_url"]
