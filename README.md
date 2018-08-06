@@ -49,7 +49,7 @@ The data are in the sub-directory ```other```:
 1. stopwords:```stopwords.json``` file contains stopwords. 
 
 ## Dbpedia Spotlight
-The source code can be found [here](https://github.com/dbpedia-spotlight/dbpedia-spotlight). I used it for entity annotation. I downloaded the ".jar" file. The code resides at ```/infolab/node4/lukuang/code/dbpedia-spotlight```. It acts as a local server and receives rest api requests. You do not need to run it as I ran it. You just need to call the rest api. How to do it can be found in the code ```src/entity/dbpedia/dbpedia.py```
+The source code can be found [here](https://github.com/dbpedia-spotlight/dbpedia-spotlight). I used it for entity annotation. I downloaded the ".jar" file. The code resides at ```/infolab/node4/lukuang/code/dbpedia-spotlight```. It acts as a local server and receives rest api requests. To run the server: ```../../code/java8/jre1.8.0_171/bin/java -jar dbpedia-spotlight-1.0.0.jar ./en http://headnode:2223/rest``` You do not need to run it as I ran it. You just need to call the rest api. How to do it can be found in the code ```src/entity/dbpedia/dbpedia.py```
 
 ## Code
 In order to run my code, there are other things you need to know/do:
