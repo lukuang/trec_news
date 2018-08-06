@@ -16,14 +16,16 @@ from data.queries import BQuery,EQuery
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--query_type","-qt",choices=range(2),default=0,type=int,
+    parser.add_argument("--query_type","-qt",choices=range(3),default=0,type=int,
         help="""
             Choose the query type:
                 0: background linking
                 1: entity ranking
+                2: test background linking query
         """)
     parser.add_argument("query_file")
     args=parser.parse_args()
+
 
     if args.query_type == 0:
 
@@ -47,6 +49,18 @@ def main():
             query_json_string = json.dumps(query)
             qid = query["qid"]
             er_query_db.set(qid,query_json_string)
+
+    elif args.query_type == 2:
+
+        test_query_db = redis.Redis(host=RedisDB.host,
+                                      port=RedisDB.port,
+                                      db=RedisDB.test_query_db)
+        test_queries = BQuery(args.query_file)
+        
+        for query in test_queries.queries:
+            query_json_string = json.dumps(query)
+            qid = query["qid"]
+            test_query_db.set(qid,query_json_string)
     else:
         raise NotImplemented("query type %d is not Not Implemented" %(args.query_type))
 
