@@ -33,11 +33,12 @@ def main():
                          port=RedisDB.port,
                          db=RedisDB.collection_stats_db)
 
+    entity_doc_vectors = {}
+    entity_paragraph_vectors = {}
     for file_name in os.walk(args.paragraph_entity_dir).next()[2]:
         file_path = os.path.join(args.paragraph_entity_dir,file_name)
         print "process file %s" %(file_path)
-        entity_doc_vectors = {}
-        entity_paragraph_vectors = {}
+        
         with open(file_path) as f:
             for line in f:
                 parts = line.split()
