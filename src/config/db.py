@@ -15,9 +15,13 @@ class RedisDB(object) :
   collection_stats_db = 3
   doc_db = 4
   test_query_db = 5
+  doc_entity_db = 6
+
+  ## annotated DB
+  annotated_collection_stats_db = 7
+  annotated_doc_db = 8
   """
-  doc_rank_db = 4
-  cs_db = 5
+
 
   ## collection profile
   col_profile_db = 10
