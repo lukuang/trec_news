@@ -1,5 +1,5 @@
 """
-dump all the articles in the collection to a json file
+dump all the articles in the original collection to a json file
 """
 
 import os
