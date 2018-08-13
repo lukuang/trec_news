@@ -2,3 +2,4 @@
 redis/db
 redis/backup
 test_results
+all_queries
