@@ -222,14 +222,14 @@ def main():
                 2: pivoted
                 3: okapi
         """)
-    parser.add_argument("--query_type","-qt",choices=range(2),default=0,type=int,
+    parser.add_argument("--index_type","-it",choices=range(2),default=0,type=int,
         help="""
-            Choose the query type:
-                0: all_text
-                1: named_entities
+            Choose the index type:
+                0: normal
+                1: annotated
         """)
-    parser.add_argument("--para_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/paragraph_index/v2")
-    parser.add_argument("--search_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/v2")
+    parser.add_argument("--para_root_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/paragraph_index/")
+    parser.add_argument("--search_root_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/")
     parser.add_argument("--number_of_keywords","-kn",default=3,type=int)
     parser.add_argument("--number_of_results","-rn",default=10,type=int)
     args=parser.parse_args()
@@ -238,14 +238,24 @@ def main():
     test_query_db = redis.Redis(host=RedisDB.host,
                                  port=RedisDB.port,
                                  db=RedisDB.test_query_db)
-    
-    doc_db = redis.Redis(host=RedisDB.host,
-                          port=RedisDB.port,
-                          db=RedisDB.doc_db)
+    if args.index_type == 0
+        doc_db = redis.Redis(host=RedisDB.host,
+                              port=RedisDB.port,
+                              db=RedisDB.doc_db)
+        para_index = os.path.join(args.para_root_index,"v2")
+        search_index = os.path.join(args.search_root_index,"v2")
+
+    else:
+        doc_db = redis.Redis(host=RedisDB.host,
+                              port=RedisDB.port,
+                              db=RedisDB.annotated_doc_db)
+        para_index = os.path.join(args.para_root_index,"annotated")
+        search_index = os.path.join(args.search_root_index,"annotated")
+
 
     for qid in test_query_db.keys():
         gene_single_keyword_query(args.query_dir, args.rule,
-                                  args.para_index, args.search_index,
+                                  para_index, search_index,
                                   args.number_of_keywords,
                                   args.number_of_results,
                                   test_query_db,doc_db,
