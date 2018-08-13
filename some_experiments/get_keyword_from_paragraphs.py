@@ -139,38 +139,19 @@ def softmax_normalized_weight(weight_dict):
         weight_dict[term] /= weight_sum
 
 
-def main():
-    parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--query_file","-qf")
-    parser.add_argument("--rule","-r",choices=range(4),default=0,type=int,
-        help="""
-            Choose the retrieval function:
-                0: f2exp
-                1: dirichlet
-                2: pivoted
-                3: okapi
-        """)
-    parser.add_argument("--query_type","-qt",choices=range(2),default=0,type=int,
-        help="""
-            Choose the query type:
-                0: all_text
-                1: named_entities
-        """)
-    parser.add_argument("--para_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/paragraph_index/v2")
-    parser.add_argument("--search_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/v2")
-    parser.add_argument("--qid",default="2203bfb5aeb4cf0adb8997e0c7185c28")
-    parser.add_argument("--number_of_keywords","-kn",default=3,type=int)
-    parser.add_argument("--number_of_results","-rn",default=10,type=int)
-    args=parser.parse_args()
 
-    #load the testing query document
-    query_db = redis.Redis(host=RedisDB.host,
-                                      port=RedisDB.port,
-                                      db=RedisDB.query_db)
+def gene_single_keyword_query(query_dir,rule,para_index,search_index,
+                              number_of_keywords,number_of_results,
+                              test_query_db,doc_db,
+                              qid):
+    print "for query %s" %(qid)
+    query_file = os.path.join(query_dir,qid)
+    query_string = test_query_db.get(qid)
+    query_json = json.loads(query_string)
+    docid = query_json["docid"]
+    doc_string = doc_db.get(docid)
 
-    doc_string = query_db.get(args.qid)
-
-    print "for query %s" %(args.qid)
+    doc_json = json.loads(doc_string)
 
     doc_json = json.loads(doc_string)
     paragraphs = doc_json["paragraphs"]
@@ -178,12 +159,12 @@ def main():
 
     # load stopwords
     collection_stats_db = redis.Redis(host=RedisDB.host,
-                         port=RedisDB.port,
-                         db=RedisDB.collection_stats_db)
+                                      port=RedisDB.port,
+                                      db=RedisDB.collection_stats_db)
 
     # create queries
 
-    query_factory = IndriQueryFactory(args.number_of_results,rule=RULE[args.rule],numeric_compare="less")
+    query_factory = IndriQueryFactory(number_of_results,rule=RULE[rule],numeric_compare="less")
     paragraph_words = OrderedDict()
     print "Getting words for each paragraph"
     for index,para_text in enumerate(paragraphs):
@@ -200,36 +181,75 @@ def main():
                 paragraph_words[qid].append(w)
 
 
-    pdw_calculator = PDWCalculator(args.para_index)
+    pdw_calculator = PDWCalculator(para_index)
 
     pdws = pdw_calculator.compute_pdw(paragraph_words)
 
     print "Output keywords:"
     for pid in pdws:
         print "For paragraph %s:" %(pid) 
-        sorted_pdw = sorted(pdws[pid].items(),key=lambda x:x[1],reverse=True)[:args.number_of_keywords]
+        sorted_pdw = sorted(pdws[pid].items(),key=lambda x:x[1],reverse=True)[:number_of_keywords]
         for keyword_pdw_pair in sorted_pdw:
             print "\t%s: %f" %(keyword_pdw_pair[0],keyword_pdw_pair[1])
         print '-'*10
 
-    if args.query_file:
-        print "Generating query file"
-        query_factory = IndriQueryFactory(100,rule=RULE[args.rule],numeric_compare="less")
-        queries = OrderedDict()
-        for pid in pdws:
-            sorted_pdw = sorted(pdws[pid].items(),key=lambda x:x[1],reverse=True)[:args.number_of_keywords]
-            weight_dict = {}
-            for keyword_pdw_pair in sorted_pdw:
-                weight = keyword_pdw_pair[1]
-                term = keyword_pdw_pair[0]
-                # weight_dict[term] = weight
-                weight_dict[term] = 1.0
-            # softmax_normalized_weight(weight_dict) 
-            queries[pid] = weight_dict
-        query_factory.gene_query_with_numeric_filter(args.query_file,
-                                queries,args.search_index,published_date,
-                                "published_date",run_id="test")
+    print "Generating query file"
+    query_factory = IndriQueryFactory(100,rule=RULE[rule],numeric_compare="less")
+    queries = OrderedDict()
+    for pid in pdws:
+        sorted_pdw = sorted(pdws[pid].items(),key=lambda x:x[1],reverse=True)[:number_of_keywords]
+        weight_dict = {}
+        for keyword_pdw_pair in sorted_pdw:
+            weight = keyword_pdw_pair[1]
+            term = keyword_pdw_pair[0]
+            # weight_dict[term] = weight
+            weight_dict[term] = 1.0
+        # softmax_normalized_weight(weight_dict) 
+        queries[pid] = weight_dict
+    query_factory.gene_query_with_numeric_filter(query_file,
+                            queries,search_index,published_date,
+                            "published_date",run_id="test")
 
+
+def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("query_dir")
+    parser.add_argument("--rule","-r",choices=range(4),default=0,type=int,
+        help="""
+            Choose the retrieval function:
+                0: f2exp
+                1: dirichlet
+                2: pivoted
+                3: okapi
+        """)
+    parser.add_argument("--query_type","-qt",choices=range(2),default=0,type=int,
+        help="""
+            Choose the query type:
+                0: all_text
+                1: named_entities
+        """)
+    parser.add_argument("--para_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/paragraph_index/v2")
+    parser.add_argument("--search_index",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/v2")
+    parser.add_argument("--number_of_keywords","-kn",default=3,type=int)
+    parser.add_argument("--number_of_results","-rn",default=10,type=int)
+    args=parser.parse_args()
+
+    #load the testing query document
+    test_query_db = redis.Redis(host=RedisDB.host,
+                                 port=RedisDB.port,
+                                 db=RedisDB.test_query_db)
+    
+    doc_db = redis.Redis(host=RedisDB.host,
+                          port=RedisDB.port,
+                          db=RedisDB.doc_db)
+
+    for qid in test_query_db.keys():
+        gene_single_keyword_query(args.query_dir, args.rule,
+                                  args.para_index, args.search_index,
+                                  args.number_of_keywords,
+                                  args.number_of_results,
+                                  test_query_db,doc_db,
+                                  qid)
 if __name__=="__main__":
     main()
 
