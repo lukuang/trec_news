@@ -122,7 +122,7 @@ def annotating_entity(entity):
     Other non-word symbols ('_' included) are also replaced with it
     """
     entity = re.sub("[^0-9a-zA-Z]+", "ENT", entity)
-    return "ENT%sENT " %(entity)
+    return " ENT%sENT " %(entity)
 
 def annotating_text(text,entity_info):
     annotated_text = ""
