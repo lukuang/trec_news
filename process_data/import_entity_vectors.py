@@ -24,9 +24,20 @@ def import_to_db(collection_stats_db,vector_name,entity_vectors):
         collection_stats_db.hset(vector_name,eid,value)
 
 
+def add_title_entities(title_entity_file,entity_doc_vectors):
+    with open(title_entity_file) as f:
+        for line in f:
+            parts = line.split()
+            docid = parts[0]
+            eid = parts[4]
+            vector_add_one(entity_doc_vectors,docid,eid)
+            
+                    
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--paragraph_entity_dir","-ped",default="/infolab/node4/lukuang/trec_news/data/washington_post/paragraph_entities")
+    parser.add_argument("--title_entity_file","-tf",default="/infolab/node4/lukuang/trec_news/data/washington_post/title_entities/title_entities")
     args=parser.parse_args()
 
     collection_stats_db = redis.Redis(host=RedisDB.host,
@@ -35,10 +46,17 @@ def main():
 
     entity_doc_vectors = {}
     entity_paragraph_vectors = {}
+
+    # add title entities
+    add_title_entities(args.title_entity_file,entity_doc_vectors)
+
+    # add paragraph entities
     for file_name in os.walk(args.paragraph_entity_dir).next()[2]:
         file_path = os.path.join(args.paragraph_entity_dir,file_name)
         print "process file %s" %(file_path)
         
+
+
         with open(file_path) as f:
             for line in f:
                 parts = line.split()
