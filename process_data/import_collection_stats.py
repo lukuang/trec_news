@@ -51,21 +51,36 @@ def get_pwc(index_dir):
 def main():
 
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--index_dir","-id",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/v2")
+    parser.add_argument("--index_root_dir","-id",default="/infolab/node4/lukuang/trec_news/data/washington_post/index/")
+    parser.add_argument("--index_type","-it",choices=range(2),default=0,type=int,
+        help="""
+            Choose the index type:
+                0: normal
+                1: annotated
+        """)
     parser.add_argument("--stopwords_path")
     args=parser.parse_args()
 
-    collection_stats_db = redis.Redis(host=RedisDB.host,
-                         port=RedisDB.port,
-                         db=RedisDB.collection_stats_db)
+    if args.index_type == 0:
+        index_dir = os.path.join(args.index_root_dir,"v2")
+        stats_db = redis.Redis(host=RedisDB.host,
+                               port=RedisDB.port,
+                               db=RedisDB.collection_stats_db)
 
+    else:    
+        index_dir = os.path.join(args.index_root_dir,"annotated")
+        stats_db = redis.Redis(host=RedisDB.host,
+                               port=RedisDB.port,
+                               db=RedisDB.annotated_collection_stats_db)
+
+    
     stopwords = load_stopwords(args.stopwords_path)
-    pwc =  get_pwc(args.index_dir)
+    pwc =  get_pwc(index_dir)
 
     
     # import stopwords
     print "import stopwords"
-    collection_stats_db.sadd("stopwords",*stopwords.keys())
+    stats_db.sadd("stopwords",*stopwords.keys())
     
     # import pwc
     size = len(pwc)
@@ -78,7 +93,7 @@ def main():
         if w in stopwords:
             continue
         value = pwc[w]
-        collection_stats_db.hset("pwc",w,value)
+        stats_db.hset("pwc",w,value)
         count += 1
         if count%percentage==0:
             print "\rhave process %.2f%%" %(100.0*count/size)
