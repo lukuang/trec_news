@@ -24,14 +24,17 @@ def import_to_db(collection_stats_db,vector_name,entity_vectors):
         collection_stats_db.hset(vector_name,eid,value)
 
 
-def add_title_entities(title_entity_file,entity_doc_vectors):
+def add_title_entities(title_entity_file,collection_stats_db):
+    entity_title_vectors = {}
     with open(title_entity_file) as f:
         for line in f:
             parts = line.split()
             docid = parts[0]
             eid = parts[4]
-            vector_add_one(entity_doc_vectors,docid,eid)
-            
+            vector_add_one(entity_title_vectors,docid,eid)
+    
+    import_to_db(collection_stats_db,"entity_title_vectors",entity_title_vectors)
+    
                     
 
 def main():
@@ -48,7 +51,7 @@ def main():
     entity_paragraph_vectors = {}
 
     # add title entities
-    add_title_entities(args.title_entity_file,entity_doc_vectors)
+    add_title_entities(args.title_entity_file,collection_stats_db)
 
     # add paragraph entities
     for file_name in os.walk(args.paragraph_entity_dir).next()[2]:
