@@ -32,9 +32,6 @@ def main():
     ]
 
     docids = set()
-    doc_db = redis.Redis(host=RedisDB.host,
-                          port=RedisDB.port,
-                          db=RedisDB.doc_db)
     if args.document_type == 0:
         collection_dump = os.path.join(args.collection_dump_root,"v2","dump")
         doc_db = redis.Redis(host=RedisDB.host,
@@ -65,7 +62,7 @@ def main():
             print "import document %s successful" %(docid)
     
     
-    print "There are %d documents" %(len(docid))
+    print "There are %d documents" %(len(docids))
     
 
 
