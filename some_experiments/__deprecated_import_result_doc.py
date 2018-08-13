@@ -81,7 +81,6 @@ def main():
                                       db=RedisDB.result_doc_db)
     for single_article in articles:
         article_dict = single_article.dict
-        docid =   article_dict.pop("docid")
         qid = doc_info_map[docid]["qid"]
         # article_dict["qid"] =  doc_info_map[docid]["qid"]     
         article_dict["phara_ids"] = doc_info_map[docid]["phara_ids"]
