@@ -238,7 +238,7 @@ def main():
     test_query_db = redis.Redis(host=RedisDB.host,
                                  port=RedisDB.port,
                                  db=RedisDB.test_query_db)
-    if args.index_type == 0
+    if args.index_type == 0:
         doc_db = redis.Redis(host=RedisDB.host,
                               port=RedisDB.port,
                               db=RedisDB.doc_db)
