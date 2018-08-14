@@ -42,7 +42,7 @@ class TypeGettor(object):
             entity_types.append(value)
         return entity_types
 
-    def check(self,entity_string):
+    def check_place(self,entity_string):
         for value in self.get_entity_types(entity_string):
             if ('http://dbpedia.org/ontology/Place' == value or
                 'http://dbpedia.org/ontology/Location' == value):
