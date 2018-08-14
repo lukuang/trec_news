@@ -10,8 +10,47 @@ import argparse
 import codecs
 from string import Template
 import subprocess
+from SPARQLWrapper import SPARQLWrapper, JSON
 
 cmd_template = Template('curl -s http://$host:$port/rest/annotate   -H "Accept: application/json"   --data-urlencode "text=$text" --data "confidence=$confidence"')
+
+
+class TypeGettor(object):
+    """get the type of an entity
+    """
+    def __init__(self,end_point="http://dbpedia.org/sparql"):
+        self._end_point = end_point
+        self._sparql =  SPARQLWrapper(self._end_point)
+
+        self._query_template = Template("""
+                SELECT ?type
+                WHERE {
+                  <http://dbpedia.org/resource/$entity> rdf:type ?type.
+                } LIMIT 100
+            """)
+
+    def get_entity_types(self,entity_string):
+        entity_types = []
+        self._sparql.setQuery(self._query_template.substitute(entity=entity_string))
+        self._sparql.setReturnFormat(JSON)
+        results = self._sparql.query().convert()
+        if len(results["results"]["bindings"]) == 0:
+            print 'Warning: no result for %s!' %()
+            print results
+        for result in results["results"]["bindings"]:
+            value = result["type"]["value"]
+            entity_types.append(value)
+        return entity_types
+
+    def check(self,entity_string):
+        for value in self.get_entity_types(entity_string):
+            if ('http://dbpedia.org/ontology/Place' == value or
+                'http://dbpedia.org/ontology/Location' == value):
+                return True
+        
+
+        return False
+
 
 class EntityAnnotator(object):
     """

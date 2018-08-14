@@ -1,5 +1,6 @@
-from dbpedia import EntityAnnotator
+from dbpedia import EntityAnnotator,TypeGettor
 
 __all__ = [
-    "EntityAnnotator"
+    "EntityAnnotator",
+    "TypeGettor"
 ]
