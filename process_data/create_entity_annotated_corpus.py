@@ -75,8 +75,8 @@ def read_title_entity_annotation(title_entity_file):
             docid = parts[0]
             entity_start = parts[1]
             entity_end = parts[2]
-            entity_string = parts[3]
-            entity_cannonical = parts[4]
+            entity_string = " ".join(parts[3:-1])
+            entity_cannonical = parts[-1]
             single_entity = {
                                 "cannonical":entity_cannonical,
                                 "start" : int(entity_start),
@@ -95,8 +95,8 @@ def read_paragraph_entity_annotation(entity_file):
             phara_id = parts[0]
             entity_start = parts[1]
             entity_end = parts[2]
-            entity_string = parts[3]
-            entity_cannonical = parts[4]
+            entity_string = " ".join(parts[3:-1])
+            entity_cannonical = parts[-1]
             m = re.match("^(.+)-(\d+)",phara_id)
             try:
                 docid = m.group(1)

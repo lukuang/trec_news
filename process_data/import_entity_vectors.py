@@ -30,7 +30,7 @@ def add_title_entities(title_entity_file,collection_stats_db):
         for line in f:
             parts = line.split()
             docid = parts[0]
-            eid = parts[4]
+            eid = parts[-1]
             vector_add_one(entity_title_vectors,docid,eid)
     
     import_to_db(collection_stats_db,"entity_title_vectors",entity_title_vectors)
@@ -65,7 +65,7 @@ def main():
                 parts = line.split()
 
                 pid = parts[0]
-                eid = parts[4]
+                eid = parts[-1]
                 vector_add_one(entity_paragraph_vectors,pid,eid)
 
                 m = re.search("^(.+?)-\d+$",pid)

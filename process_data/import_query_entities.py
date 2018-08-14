@@ -24,7 +24,7 @@ def read_paragraph_entities(pharagraph_entity_dir,document_ids):
             for line in f:
                 parts = line.split()
                 phara_id = parts[0]
-                entity_cannonical = parts[4]
+                entity_cannonical = parts[-1]
                 m = re.match("^(.+)-(\d+)",phara_id)
                 try:
                     docid = m.group(1)
@@ -45,7 +45,7 @@ def read_title_entities(title_entity_file,document_ids):
         for line in f:
             parts = line.split()
             docid = parts[0]
-            entity_cannonical = parts[4]
+            entity_cannonical = parts[-1]
             if docid in document_ids:
 
                 title_entities[docid].append(entity_cannonical)
