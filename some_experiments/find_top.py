@@ -15,7 +15,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("src_dir")
     parser.add_argument("dest_dir")
-    parser.add_argument("--number_of_top","-nt",type=int,default=2)
+    parser.add_argument("--number_of_top","-nt",type=int,default=5)
     args=parser.parse_args()
 
     for file_name in os.walk(args.src_dir).next()[2]:
