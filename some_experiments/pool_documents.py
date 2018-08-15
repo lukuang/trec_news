@@ -45,7 +45,7 @@ def main():
                 qid = parts[0]
                 docid = parts[2]
                 file_docids[qid] += 1
-                if file_docids[qid] >= args.pool_depth:
+                if file_docids[qid] > args.pool_depth:
                     continue
                 if docid not in judged_docids[qid]:
                     unjudged_docids[qid][docid] += 1
