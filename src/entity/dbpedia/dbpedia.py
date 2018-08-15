@@ -35,7 +35,7 @@ class TypeGettor(object):
         self._sparql.setReturnFormat(JSON)
         results = self._sparql.query().convert()
         if len(results["results"]["bindings"]) == 0:
-            print 'Warning: no result for %s!' %()
+            print 'Warning: no result for %s!' %(entity_string)
             print results
         for result in results["results"]["bindings"]:
             value = result["type"]["value"]
