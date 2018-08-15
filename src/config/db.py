@@ -20,8 +20,11 @@ class RedisDB(object) :
   ## annotated DB
   annotated_collection_stats_db = 7
   annotated_doc_db = 8
-  """
 
+  ## entity DB
+  entity_types_db = 9
+
+  """
 
   ## collection profile
   col_profile_db = 10
