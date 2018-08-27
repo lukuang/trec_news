@@ -1,0 +1,8 @@
+Ranking:
+    without entity:
+        best title weight: 0.7
+        best merging: higest
+
+    with entity:
+        best title weight: 0.7
+        best merging: highest
