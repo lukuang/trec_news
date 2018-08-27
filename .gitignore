@@ -3,3 +3,5 @@ redis/db
 redis/backup
 test_results
 all_queries
+annotated_corpus
+run_submission/task1/results
