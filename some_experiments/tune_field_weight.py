@@ -15,7 +15,18 @@ def main():
     parser.add_argument("src_dir")
     parser.add_argument("dest_dir")
     parser.add_argument("--have_weights","-hw",action="store_true")
+    parser.add_argument("--no_run_query","-nq",action="store_true")
     parser.add_argument("--qrel_file",default="/infolab/node4/lukuang/trec_news/trec_news/some_experiments/test_qrel")
+    parser.add_argument("--how_to_merge","-hm",default=1,choices=range(5),type=int,
+            help="""
+                Choose how to merge the results:
+                    0: vote + highest score,
+                    1: highest score
+                    2: simple merging formula based on
+                        Jamie Callan's Paper (eq 5.10)
+                    3: first result
+                    4: reciprocal rank fusion
+            """)
     args=parser.parse_args()
 
     for i in range(11):
@@ -42,13 +53,15 @@ def main():
             if args.have_weights:
                 query_gene_args.append("-hw")
 
-            subprocess.call(query_gene_args)
+            if not args.no_run_query:
+                subprocess.call(query_gene_args)
 
             # run query
             dest_result_dir = os.path.join(weight_dest_dir,"results")
             dest_result_file = os.path.join(dest_result_dir,qid)
             run_query_args = "IndriRunQuery %s > %s" %(dest_query_file,dest_result_file)
-            subprocess.call(run_query_args,shell=True)
+            if not args.no_run_query:
+                subprocess.call(run_query_args,shell=True)
 
 
 
@@ -56,13 +69,15 @@ def main():
         print "\tFind top two"
         dest_top_two_dir = os.path.join(weight_dest_dir,"top_two_results")
         get_top_two_args = ["python","find_top.py", dest_result_dir,dest_top_two_dir]
-        subprocess.call(get_top_two_args)
+        if not args.no_run_query:
+                subprocess.call(get_top_two_args)
 
         # get top two
         print "\tFind top five"
         dest_top_five_dir = os.path.join(weight_dest_dir,"top_five_results")
         get_top_five_args = ["python","find_top.py", dest_result_dir,dest_top_five_dir,"-nt","5"]
-        subprocess.call(get_top_five_args)
+        if not args.no_run_query:
+                subprocess.call(get_top_five_args)
 
 
         # merge two all results
@@ -71,11 +86,14 @@ def main():
         merge_all_dest_file = os.path.join(merge_dest_dir,"merge_all")
         merge_top_two_dest_file = os.path.join(merge_dest_dir,"merge_top_two")
         merge_top_five_dest_file = os.path.join(merge_dest_dir,"merge_top_five")
-        get_all_merge_args = ["python","simple_merge_result.py", dest_result_dir,merge_all_dest_file]
+        print "merge %s" %(dest_result_dir)
+        get_all_merge_args = ["python","simple_merge_result.py", dest_result_dir,merge_all_dest_file,"-hm",str(args.how_to_merge)]
         subprocess.call(get_all_merge_args)
-        get_top_two_merge_args = ["python","simple_merge_result.py", dest_top_two_dir,merge_top_two_dest_file]
+        print "merge %s" %(dest_top_two_dir)
+        get_top_two_merge_args = ["python","simple_merge_result.py", dest_top_two_dir,merge_top_two_dest_file,"-hm",str(args.how_to_merge)]
         subprocess.call(get_top_two_merge_args)
-        get_top_five_merge_args = ["python","simple_merge_result.py", dest_top_five_dir,merge_top_five_dest_file]
+        print "merge %s" %(dest_top_five_dir)
+        get_top_five_merge_args = ["python","simple_merge_result.py", dest_top_five_dir,merge_top_five_dest_file,"-hm",str(args.how_to_merge)]
         subprocess.call(get_top_five_merge_args)
 
         # evaluate
