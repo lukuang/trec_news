@@ -37,7 +37,7 @@ def main():
             line_prefix = "%s\tQ0" %(qid)
             
             counts = Counter()
-            max_scores = Counter()
+            max_scores =  defaultdict( lambda: -9999.0)
             all_doc_scores = defaultdict( lambda: defaultdict(list))
             para_scores = defaultdict(list)
             score_struct = defaultdict( lambda: defaultdict(dict))
@@ -50,13 +50,14 @@ def main():
                     docid = parts[2]
                     score = float(parts[4])
 
-                    counts[docid] += 1 
-                    max_scores[docid] = max(score, max_scores[docid])
                     
-                    # if len(para_scores[pid]) < 5:
-                    score_struct[pid][score] = docid
-                    para_scores[pid].append(score)
-                    all_doc_scores[docid][pid] = score
+                    if len(para_scores[pid]) <= args.merge_cutoff:
+                        counts[docid] += 1 
+                        max_scores[docid] = max(score, max_scores[docid])
+                    
+                        score_struct[pid][score] = docid
+                        para_scores[pid].append(score)
+                        all_doc_scores[docid][pid] = score
 
             if args.how_to_merge == 0:
                 dict_to_rank = defaultdict(dict)
