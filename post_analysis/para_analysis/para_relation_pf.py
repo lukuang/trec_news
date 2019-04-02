@@ -153,6 +153,8 @@ def main():
         query_pf = []
 
         for word in pf_map:
+            if pf_map[word] > 10:
+                continue
             word_measure = qrels.measure(doc_vector[word], qid)
             query_measure.append(word_measure)
             query_pf.append(pf_map[word])
