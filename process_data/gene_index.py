@@ -29,7 +29,7 @@ def main():
 
     field_data = []
     field_data.append({"name":"published_date","type":"numeric"})
-    if args.index_type == 1:
+    if args.index_type == 0:
         field_data.append({"name":"tt","type":"text"})
         field_data.append({"name":"body","type":"text"})
     gene_indri_index_para_file(args.corpus_dir,args.indri_para_path,
