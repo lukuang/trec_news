@@ -16,6 +16,7 @@ class RedisDB(object) :
   doc_db = 4
   test_query_db = 5
   doc_entity_db = 6
+  stemed_collection_stats_db = 14
 
   ## annotated DB
   annotated_collection_stats_db = 7
@@ -23,6 +24,13 @@ class RedisDB(object) :
 
   ## entity DB
   entity_types_db = 9
+
+  ## word info DB
+  para_word_info_db = 10
+  annotated_para_word_info_db = 11
+  doc_word_info_db = 12
+  annotated_doc_word_info_db = 13
+
 
   """
 

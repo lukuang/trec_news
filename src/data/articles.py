@@ -11,6 +11,8 @@ import codecs
 from bs4 import BeautifulSoup
 from HTMLParser import HTMLParser
 
+reload(sys)
+sys.setdefaultencoding("utf-8")
 # according to the guideline,
 # articl types to be discarded ( opinion or editorials)
   
@@ -25,13 +27,14 @@ class ArticleGenerator(object):
     generate articles from file
     """
 
-    def __init__(self):
+    def __init__(self, required_docids=set()):
         self._h =  HTMLParser()
+        self._seen = set()
+        self._required_docids = required_docids
 
-     
     def generate_from_dir(self,dir_path,docids=None):
         articles = []
-        for file_path in os.walk(dir_path).next()[2]:
+        for file_path in sorted(os.walk(dir_path).next()[2]):
             file_path = os.path.join(dir_path,file_path)
             file_articles = self.generate_from_file(file_path,docids)
             
@@ -76,7 +79,7 @@ class ArticleGenerator(object):
                         elif c["type"] == "kicker":
                             # ignore some articles with unwanted
                             # types
-                            if c["type"] in DISCARD_TYPES:
+                            if c["content"] in DISCARD_TYPES:
                                 discard = True
                                 break
                         elif c["type"] == "image":
@@ -93,13 +96,19 @@ class ArticleGenerator(object):
                                 else:
                                     paragraphs.append(clean_text)
 
+                    if docid in self._required_docids:
+                        discard = False
                     if not discard:
-                        single_article = Article(title,docid,
-                                                 published_date,url,
-                                                 images,paragraphs)
+                        idx = '{}_{}_{}'.format(doc_json['title'], doc_json['author'], doc_json['published_date'])
+                        if ( docid in self._required_docids
+                            or idx not in self._seen):
+                            self._seen.add(idx)
+                            single_article = Article(title,docid,
+                                                     published_date,url,
+                                                     images,paragraphs)
 
-                        articles.append(single_article)
-                        
+                            articles.append(single_article)
+                            
                         # for debug purpose
                         # break
 

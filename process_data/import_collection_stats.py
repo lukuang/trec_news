@@ -36,7 +36,7 @@ def get_pwc(index_dir):
             total = float(parts[1])
 
             # store a value for out of vocabulary words
-            pwc["[OOV]"] = 1000.0/total
+            # pwc["[OOV]"] = 1000.0/total
         else:
             stem = parts[0]
             try:
@@ -62,16 +62,16 @@ def main():
     args=parser.parse_args()
 
     if args.index_type == 0:
-        index_dir = os.path.join(args.index_root_dir,"v2")
+        index_dir = os.path.join(args.index_root_dir,"v3")
         stats_db = redis.Redis(host=RedisDB.host,
                                port=RedisDB.port,
                                db=RedisDB.collection_stats_db)
 
     else:    
-        index_dir = os.path.join(args.index_root_dir,"annotated")
+        index_dir = os.path.join(args.index_root_dir,"v3_stemed")
         stats_db = redis.Redis(host=RedisDB.host,
                                port=RedisDB.port,
-                               db=RedisDB.annotated_collection_stats_db)
+                               db=RedisDB.stemed_collection_stats_db)
 
     
     stopwords = load_stopwords(args.stopwords_path)
@@ -90,8 +90,8 @@ def main():
     count = 0
     
     for w in pwc:
-        if w in stopwords:
-            continue
+        # if w in stopwords:
+        #     continue
         value = pwc[w]
         stats_db.hset("pwc",w,value)
         count += 1

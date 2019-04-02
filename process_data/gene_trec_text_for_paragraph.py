@@ -9,12 +9,16 @@ import sys
 import re
 import argparse
 import codecs
+import redis
 from string import Template
 # from myUtility import indri
 # from myUtility.indri import TextFactory 
 
 sys.path.append("/infolab/node4/lukuang/trec_news/trec_news/src")
 from data import ArticleGenerator, Article
+
+sys.path.append("/infolab/node4/lukuang/trec_news/trec_news/src")
+from config.db import RedisDB
 
 text_template = Template("""
 <DOC>
@@ -32,14 +36,26 @@ def main():
     parser.add_argument("dest_dir")
     args=parser.parse_args()
 
-    for file_name in os.walk(args.doc_dir).next()[2]:
+    #load the testing query document
+    bl_query_db = redis.Redis(host=RedisDB.host,
+                                 port=RedisDB.port,
+                                 db=RedisDB.bl_query_db)
+
+    required_docids = set()
+    for qid in bl_query_db.keys():
+        query_string = bl_query_db.get(qid)
+        query_json = json.loads(query_string)
+        docid = query_json["docid"]
+        required_docids.add(docid)
+
+    for file_name in sorted(os.walk(args.doc_dir).next()[2]):
         file_path = os.path.join(args.doc_dir,file_name)
         dest_file = os.path.join(args.dest_dir,file_name)
         if os.path.exists(dest_file):
             print "Skip an existing file %s" %(file_name)
             continue
 
-        article_generator = ArticleGenerator()
+        article_generator = ArticleGenerator(required_docids)
         articles = article_generator.generate_from_file(file_path)
         
         count = 0
