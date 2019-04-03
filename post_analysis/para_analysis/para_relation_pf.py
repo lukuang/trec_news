@@ -16,6 +16,7 @@ import matplotlib
 from collections import Counter
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+from matplotlib import colors
 
 from misc import *
 
@@ -172,6 +173,12 @@ def main():
     all_dest_file = os.path.join(meausre_dir, 'all.png' )
     plt.plot(all_pf, all_measure, 'ro')
     plt.savefig(all_dest_file)
+    plt.clf()
+
+    fig, ax = plt.subplots(tight_layout=True)
+    dest_file_2D_hist = os.path.join(meausre_dir, 'all_2D_hist.png' )
+    hist = ax.hist2d(all_pf, all_measure, bins=[10, 50], norm=colors.LogNorm())
+    fig.savefig(dest_file_2D_hist)
 
 
 
