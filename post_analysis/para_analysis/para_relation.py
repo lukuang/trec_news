@@ -13,6 +13,7 @@ import argparse
 import codecs
 import math
 import matplotlib
+from matplotlib import colors
 from collections import Counter
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
@@ -157,6 +158,8 @@ def main():
         query_ipf = []
 
         for word in ipf_map:
+            if ipf_map[word] > 75:
+                continue
             word_measure = qrels.measure(doc_vector[word], qid)
             query_measure.append(word_measure)
             query_ipf.append(ipf_map[word])
@@ -174,6 +177,15 @@ def main():
     all_dest_file = os.path.join(meausre_dir, 'all.png' )
     plt.plot(all_ipf, all_measure, 'ro')
     plt.savefig(all_dest_file)
+
+    plt.clf()
+
+    fig, ax = plt.subplots(tight_layout=True)
+    dest_file_2D_hist = os.path.join(meausre_dir, 'all_2D_hist.png' )
+    hist = ax.hist2d(all_ipf, all_measure, bins=[10, 50], norm=colors.LogNorm())
+    plt.colorbar(hist[3], ax=ax)
+    ax.legend()
+    fig.savefig(dest_file_2D_hist)
 
 
 

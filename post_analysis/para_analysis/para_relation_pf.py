@@ -178,6 +178,8 @@ def main():
     fig, ax = plt.subplots(tight_layout=True)
     dest_file_2D_hist = os.path.join(meausre_dir, 'all_2D_hist.png' )
     hist = ax.hist2d(all_pf, all_measure, bins=[10, 50], norm=colors.LogNorm())
+    plt.colorbar(hist[3], ax=ax)
+    ax.legend()
     fig.savefig(dest_file_2D_hist)
 
 
